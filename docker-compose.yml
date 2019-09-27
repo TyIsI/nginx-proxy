@@ -6,6 +6,7 @@ services:
     networks:
     - public
     - proxy
+    restart: always
     ports:
     - 80:80/tcp
     - 443:443/tcp
@@ -24,6 +25,7 @@ services:
     image: jrcs/letsencrypt-nginx-proxy-companion
     networks:
     - public
+    restart: always
     volumes:
     - ./certs:/etc/nginx/certs:rw
     - /var/run/docker.sock:/var/run/docker.sock:ro
