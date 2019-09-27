@@ -1,0 +1,39 @@
+version: '2.1'
+services:
+  nginx-proxy:
+    container_name: nginx_proxy
+    image: jwilder/nginx-proxy
+    networks:
+    - public
+    - proxy
+    ports:
+    - 80:80/tcp
+    - 443:443/tcp
+    volumes:
+    - ./certs:/etc/nginx/certs:ro
+    - ./conf.d:/etc/nginx/conf.d:rw
+    - ./vhost.d:/etc/nginx/vhost.d:rw
+    - ./html:/usr/share/nginx/html:rw
+    - ./dhparam:/etc/nginx/dhparam:rw
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  nginx-proxy-letsencrypt:
+    container_name: nginx_proxy_letsencrypt
+    depends_on:
+    - nginx-proxy
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks:
+    - public
+    volumes:
+    - ./certs:/etc/nginx/certs:rw
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+    - service:nginx-proxy:rw
+
+networks:
+  public:
+    name: public
+    driver: bridge
+  proxy:
+    name: proxy
+    driver: overlay
