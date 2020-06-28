@@ -25,6 +25,7 @@ services:
     image: jrcs/letsencrypt-nginx-proxy-companion
     networks:
     - public
+    - proxy
     restart: always
     volumes:
     - ./certs:/etc/nginx/certs:rw
@@ -39,3 +40,4 @@ networks:
   proxy:
     name: proxy
     driver: overlay
+    internal: true
